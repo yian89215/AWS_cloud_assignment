@@ -6,12 +6,14 @@
 ---
 
 ## 檔案描述
-backend/template.yml  ->定義 Lambda + API Gateway 架構
-backend/weather_api/  ->Python Lambda 運作程式碼
 
-frontend/template.yml ->定義 S3 + CloudFront 前端架構
-frontend/amplify.yml ->前端建置設定檔
-frontend/dist/ -> npm run build 後產物
+`backend/template.yml` → 定義 Lambda + API Gateway 架構  
+`backend/weather_api/` → Python Lambda 運作程式碼  
+
+`frontend/template.yml` → 定義 S3 + CloudFront 前端架構  
+`frontend/amplify.yml` → 前端建置設定檔  
+`frontend/dist/` → `npm run build` 後產物
+
 ---
 
 ## 前端部署
