@@ -1,0 +1,19 @@
+# Node / frontend
+node_modules/
+dist/
+.env
+.env.*
+package-lock.json
+
+# Python / Lambda
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.zip
+
+# AWS temporary
+*.log
+.aws-sam/
+*.DS_Store
+

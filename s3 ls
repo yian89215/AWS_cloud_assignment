@@ -1,0 +1,32 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:ap-southeast-2:161326239953:stack/weather-ci-pipeline/44f8e530-aa60-11f0-a944-06fa215f10b7",
+            "StackName": "weather-ci-pipeline",
+            "Description": "CI/CD pipeline for Lambda + API Gateway deployment (fixed env var)",
+            "CreationTime": "2025-10-16T07:18:09.999000+00:00",
+            "DeletionTime": "2025-10-16T07:43:02.472000+00:00",
+            "LastUpdatedTime": "2025-10-16T07:18:15.378000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "DELETE_FAILED",
+            "StackStatusReason": "The following resource(s) failed to delete: [ArtifactBucket]. ",
+            "DisableRollback": false,
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_IAM"
+            ],
+            "Outputs": [
+                {
+                    "OutputKey": "PipelineName",
+                    "OutputValue": "weather-ci-pipeline-WeatherCIPipeline-5xC2Fn0JcdOu",
+                    "Description": "Name of the CodePipeline"
+                }
+            ],
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

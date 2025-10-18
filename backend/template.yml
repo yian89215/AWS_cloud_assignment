@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Lambda + API Gateway backend (parameterized S3 code bucket)
+
+Parameters:
+  CodeBucketName:
+    Type: String
+    Description: S3 bucket name that stores Lambda zip (artifact bucket)
+  CodeKey:
+    Type: String
+    Default: weather_api.zip
+    Description: Object key of the Lambda zip
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  WeatherLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: weather_api
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: python3.9
+      Timeout: 10
+      Description: !Sub "Deployed with stack ${AWS::StackName} at ${AWS::Region}"
+      Code:
+        S3Bucket: !Ref CodeBucketName
+        S3Key: !Ref CodeKey
+
+  ApiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: WeatherAPI
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  ResourceWeather:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref ApiGateway
+      ParentId: !GetAtt ApiGateway.RootResourceId
+      PathPart: weather
+
+  GetMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref ApiGateway
+      ResourceId: !Ref ResourceWeather
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WeatherLambda.Arn}/invocations
+
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WeatherLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: GetMethod
+    Properties:
+      RestApiId: !Ref ApiGateway
+      StageName: prod
+
+Outputs:
+  ApiUrl:
+    Description: Weather API invoke URL
+    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/prod/weather"
+
